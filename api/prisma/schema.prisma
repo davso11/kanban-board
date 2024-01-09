@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
+}
+
+generator zod {
+  provider                         = "zod-prisma-types"
+  writeNullishInModelTypes         = "true"
+  createInputTypes                 = "false"
+  createOptionalDefaultValuesTypes = "true"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  label     String   @unique /// @zod.string.min(1, { message: "Le libellé ne peut être vide" })
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+  order     Int
+  tasks     Task[]
+}
+
+model Task {
+  id         String    @id @default(uuid())
+  label      String    @db.VarChar(225) /// @zod.string.min(1, { message: "Le libellé ne peut être vide" })
+  targetDate DateTime?
+  createdAt  DateTime
+  updatedAt  DateTime  @updatedAt
+  order      Int
+  categoryId String
+  category   Category  @relation(fields: [categoryId], references: [id])
+}

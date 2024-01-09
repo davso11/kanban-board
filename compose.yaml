@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:5.7
+    ports:
+      - 8889:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: kanban-board
+    volumes:
+      - db:/var/lib/mysql
+
+  api:
+    build: ./api
+    ports:
+      - 3000:3000
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    env_file:
+      - ./api/.env
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=mysql://root:root@db:3306/kanban-board
+    depends_on:
+      - db
+
+  web:
+    build: ./web
+    ports:
+      - 5173:5173
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  db:
