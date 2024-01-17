@@ -1,5 +1,5 @@
-import { ElementRef, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { MoreHorizontal, Plus, Check, X } from 'lucide-react';
@@ -28,7 +28,7 @@ export const Board = ({
   const [renameMode, setRenameMode] = useState(false);
   const [newName, setNewName] = useState(category.label);
   const { rename, renamingStatus } = useCategories();
-  const renameInputRef = useRef<ElementRef<'input'>>(null);
+  const renameInputRef = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
 
   const isRenaming = renamingStatus === 'pending';
@@ -36,7 +36,6 @@ export const Board = ({
   const enableRenameMode = () => {
     setRenameMode(true);
     setNewName(category.label);
-    renameInputRef.current?.focus(); // not working
   };
 
   const renameHandler = async () => {
@@ -62,19 +61,22 @@ export const Board = ({
   };
 
   // Close rename mode on `esc` key
+  const escKeyHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && renameMode) {
+      setRenameMode(false);
+    }
+  };
+
   useEffect(() => {
-    const escHandler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && renameMode) {
-        setRenameMode(false);
-      }
-    };
+    if (renameMode) {
+      renameInputRef.current?.focus();
+    }
+  }, [renameMode]);
 
-    window.addEventListener('keydown', escHandler);
-
-    return () => {
-      window.removeEventListener('keydown', escHandler);
-    };
-  }, []);
+  useEffect(() => {
+    window.addEventListener('keydown', escKeyHandler);
+    return () => window.removeEventListener('keydown', escKeyHandler);
+  }, [escKeyHandler]);
 
   return (
     <Draggable
