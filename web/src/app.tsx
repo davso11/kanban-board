@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import { Plus } from 'lucide-react';
 import { Board } from '@/components/board';
 import { Shell } from '@/components/ui/shell';

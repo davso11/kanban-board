@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
@@ -54,26 +54,26 @@ export const NewCategoryDialog = ({
       return;
     }
 
-    toast.promise(
-      saveCategory({
-        label: result.data.name,
-        order: totalCategories + 1,
-      }),
-      {
-        loading: 'Enregistrement...',
-        success() {
-          qc.invalidateQueries({ queryKey: ['categories'] });
-          return 'Catégorie enregistrée';
+    try {
+      await toast.promise(
+        saveCategory({
+          label: result.data.name,
+          order: totalCategories + 1,
+        }),
+        {
+          loading: 'Enregistrement...',
+          error: "Error lors de l'enregistrement",
+          success() {
+            qc.invalidateQueries({ queryKey: ['categories'] });
+            return 'Catégorie enregistrée';
+          },
         },
-        error(e) {
-          console.log(e);
-          return "Error lors de l'enregistrement";
-        },
-        finally() {
-          setIsOpen(false);
-        },
-      },
-    );
+      );
+
+      setIsOpen(false);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (

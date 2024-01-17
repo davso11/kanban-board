@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';

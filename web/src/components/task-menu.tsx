@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';
@@ -32,20 +32,20 @@ export const TaskMenu = ({ trigger, task }: TaskMenuProps) => {
   const qc = useQueryClient();
 
   async function deleteTaskHandler() {
-    toast.promise(deleteTask(task.id), {
-      loading: 'Suppression...',
-      success() {
-        qc.invalidateQueries({ queryKey: ['categories'] });
-        return 'Tâche supprimée';
-      },
-      error(e) {
-        console.log(e);
-        return 'Erreur lors de la suppression';
-      },
-      finally() {
-        setIsOpen(false);
-      },
-    });
+    try {
+      await toast.promise(deleteTask(task.id), {
+        loading: 'Suppression...',
+        error: 'Erreur lors de la suppression',
+        success() {
+          qc.invalidateQueries({ queryKey: ['categories'] });
+          return 'Tâche supprimée';
+        },
+      });
+
+      setIsOpen(false);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (

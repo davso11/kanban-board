@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { CalendarIcon } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from 'react-hot-toast';
 import {
   Dialog,
   DialogContent,
@@ -69,22 +69,22 @@ export const NewTaskDialog = ({
       return;
     }
 
-    toast.promise(saveTask(validationResult.data), {
-      loading: 'Enregistrement...',
-      success() {
-        qc.invalidateQueries({ queryKey: ['categories'] });
-        return 'Tâche enregistrée';
-      },
-      error(e) {
-        console.log(e);
-        return "Error lors de l'enregistrement";
-      },
-      finally() {
-        setLabel('');
-        setTargetDate(undefined);
-        setIsOpen(false);
-      },
-    });
+    try {
+      await toast.promise(saveTask(validationResult.data), {
+        loading: 'Enregistrement...',
+        error: "Error lors de l'enregistrement",
+        success() {
+          qc.invalidateQueries({ queryKey: ['categories'] });
+          return 'Tâche enregistrée';
+        },
+      });
+
+      setLabel('');
+      setTargetDate(undefined);
+      setIsOpen(false);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
