@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { Context } from 'hono';
 import { db } from '@/lib/db';
 import { CategoryOptionalDefaultsSchema } from 'prisma/generated/zod';
@@ -74,6 +75,51 @@ export async function getEveryCategories(c: Context<any, '/', {}>) {
     return c.json(categories);
   } catch (e: any) {
     return c.json({
+      name: e.name,
+      message: e.message,
+    });
+  }
+}
+
+export async function updateCategories(c: Context<any, '/', {}>) {
+  const schema = z.array(
+    z.object({
+      id: z.string().uuid(),
+      label: z.string().min(1, { message: 'Le libellé ne peut être vide' }),
+      order: z.number().int(),
+    }),
+  );
+
+  try {
+    const json = await c.req.json().catch((e) => {
+      c.status(400);
+      throw {
+        name: 'BAD_REQUEST',
+        message: 'Données JSON attendues',
+      };
+    });
+
+    const data = await schema.parseAsync(json).catch((e) => {
+      c.status(400);
+      throw e;
+    });
+
+    const promises = data.map((category) => {
+      return db.category.update({
+        where: { id: category.id },
+        data: category,
+      });
+    });
+
+    const txResult = await db.$transaction(promises).catch((e: any) => {
+      c.status(424);
+      throw e;
+    });
+
+    return c.json({ ok: true });
+  } catch (e: any) {
+    return c.json({
+      ok: false,
       name: e.name,
       message: e.message,
     });

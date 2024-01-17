@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
-import { CategoryAPIResponse } from '@/types';
+import { CategoryAPIResponse, TTask } from '@/types';
 
 export function useCategories() {
   const { data: categories, status: queryStatus } = useQuery({
@@ -33,19 +33,15 @@ export function useCategories() {
   });
 
   const { mutateAsync: updateCategories, status: updateStatus } = useMutation({
-    mutationFn: async ({
-      id,
-      label,
-      order,
-    }: {
-      id: string;
-      label: string;
-      order: number;
-    }) => {
-      const { data: res, status } = await axios.put(`/task-categories/${id}`, {
-        label,
-        order,
-      });
+    mutationFn: async (
+      data: Array<{
+        id: string;
+        label: string;
+        order: number;
+        tasks?: TTask[];
+      }>,
+    ) => {
+      const { data: res, status } = await axios.put(`/task-categories`, data);
       if (status !== 200) throw res; // as error
       return res as CategoryAPIResponse;
     },

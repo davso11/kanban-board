@@ -8,7 +8,8 @@ const router = new Hono();
 router
   .route('/')
   .post(handlers.createCategory)
-  .get('/', handlers.getEveryCategories);
+  .get(handlers.getEveryCategories)
+  .put(handlers.updateCategories);
 
 router.route('/:id').delete(handlers.deleteCategory);
 

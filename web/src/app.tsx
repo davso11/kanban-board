@@ -14,9 +14,16 @@ import { reorder } from '@/lib/utils';
 export const App = () => {
   const [droppableTaskCategory] = useState<string>();
   const { updateTasks } = useTasks(droppableTaskCategory);
-  const { categories, queryStatus: catStatus } = useCategories();
+  const {
+    categories,
+    queryStatus: catStatus,
+    updateCategories,
+    updateStatus,
+  } = useCategories();
   const [orderedCategories, setOrderedCategories] = useState(categories ?? []);
   const qc = useQueryClient();
+
+  const isMaxCategories = orderedCategories.length >= 3;
 
   // TODO: CHANGE THE DRAG ORIENTATION ON SMALL SCREEENS
 
@@ -53,9 +60,19 @@ export const App = () => {
         return item;
       });
 
-      console.log(result);
+      setOrderedCategories(result);
 
-      // TODO: Persist changes
+      // Persist changes
+      await updateCategories(result, {
+        async onSuccess() {
+          await qc.invalidateQueries({ queryKey: ['categories'] });
+        },
+        onError() {
+          toast.error('Erreur survenue');
+        },
+      });
+
+      return;
     }
 
     // If dragged a task
@@ -182,7 +199,7 @@ export const App = () => {
               ref={provided.innerRef}
               className="grid grid-cols-1 items-start gap-y-10 lg:grid-cols-3"
             >
-              {categories.map((item, i) => (
+              {orderedCategories.map((item, i) => (
                 <Board
                   key={item.id}
                   index={i}
@@ -220,11 +237,14 @@ export const App = () => {
                 disabled={
                   catStatus === 'pending' ||
                   catStatus === 'error' ||
-                  (categories && categories.length >= 3)
+                  isMaxCategories ||
+                  updateStatus === 'pending'
                 }
               >
-                <Plus size={16} />
-                <span>Catégorie</span>
+                {!isMaxCategories && <Plus size={16} />}
+                <span>
+                  {isMaxCategories ? 'Max (03) atteint' : 'Catégorie'}
+                </span>
               </Button>
             }
           />
