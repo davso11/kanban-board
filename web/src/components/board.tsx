@@ -4,7 +4,6 @@ import { Task } from './task';
 import { Button } from './ui/button';
 import { NewTaskDialog } from './new-task-dialog';
 import { CategoryAPIResponse } from '@/types';
-import { NewCategoryDialog } from './new-category-dialog';
 import { CategoryMenu } from './category-menu';
 
 type BoardProps = {
@@ -31,7 +30,7 @@ export const Board = ({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          className="board mr-3 flex flex-col space-y-4"
+          className="board mb-6 flex flex-col space-y-4 md:mr-3"
         >
           {/* HEADER */}
           <div className="flex items-center justify-between font-semibold">

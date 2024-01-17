@@ -10,6 +10,7 @@ import { NewCategoryDialog } from '@/components/new-category-dialog';
 import { useTasks } from '@/hooks/tasks';
 import { useCategories } from '@/hooks/categories';
 import { reorder } from '@/lib/utils';
+import { useSizes } from '@/hooks/screen';
 
 export const App = () => {
   const [droppableTaskCategory] = useState<string>();
@@ -25,7 +26,7 @@ export const App = () => {
 
   const isMaxCategories = orderedCategories.length >= 3;
 
-  // TODO: CHANGE THE DRAG ORIENTATION ON SMALL SCREEENS
+  const { width } = useSizes();
 
   useEffect(() => {
     if (catStatus === 'success' || categories) {
@@ -191,13 +192,13 @@ export const App = () => {
         <Droppable
           type="category"
           droppableId="categories"
-          direction="horizontal"
+          direction={width <= 768 ? 'vertical' : 'horizontal'}
         >
           {(provided) => (
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-1 items-start gap-y-10 lg:grid-cols-3"
+              className="grid grid-cols-1 items-start md:grid-cols-3 "
             >
               {orderedCategories.map((item, i) => (
                 <Board
