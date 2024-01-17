@@ -1,4 +1,4 @@
-import { ElementRef, useRef, useState } from 'react';
+import { ElementRef, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
@@ -60,6 +60,21 @@ export const Board = ({
       console.log(e);
     }
   };
+
+  // Close rename mode on `esc` key
+  useEffect(() => {
+    const escHandler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && renameMode) {
+        setRenameMode(false);
+      }
+    };
+
+    window.addEventListener('keydown', escHandler);
+
+    return () => {
+      window.removeEventListener('keydown', escHandler);
+    };
+  }, []);
 
   return (
     <Draggable
