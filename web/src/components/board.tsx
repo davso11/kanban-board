@@ -1,10 +1,16 @@
+import { ElementRef, useRef, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useQueryClient } from '@tanstack/react-query';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
-import { MoreHorizontal, Plus } from 'lucide-react';
-import { Task } from './task';
-import { Button } from './ui/button';
+import { MoreHorizontal, Plus, Check, X } from 'lucide-react';
+import { useCategories } from '@/hooks/categories';
 import { NewTaskDialog } from './new-task-dialog';
 import { CategoryAPIResponse } from '@/types';
 import { CategoryMenu } from './category-menu';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { Task } from './task';
+import { cn } from '@/lib/utils';
 
 type BoardProps = {
   index: number;
@@ -19,6 +25,41 @@ export const Board = ({
 }: BoardProps) => {
   const tasks = category.tasks!;
   const totalTasks = tasks.length;
+  const [renameMode, setRenameMode] = useState(false);
+  const [newName, setNewName] = useState(category.label);
+  const { rename, renamingStatus } = useCategories();
+  const renameInputRef = useRef<ElementRef<'input'>>(null);
+  const qc = useQueryClient();
+
+  const isRenaming = renamingStatus === 'pending';
+
+  const enableRenameMode = () => {
+    setRenameMode(true);
+    setNewName(category.label);
+    renameInputRef.current?.focus(); // not working
+  };
+
+  const renameHandler = async () => {
+    try {
+      await toast.promise(
+        rename({
+          id: category.id,
+          label: newName,
+        }),
+        {
+          loading: 'Renommage...',
+          error: 'Erreur lors du renommage',
+          success: () => {
+            setRenameMode(false);
+            qc.invalidateQueries({ queryKey: ['categories'] });
+            return 'Catégorie renommée';
+          },
+        },
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Draggable
@@ -33,26 +74,64 @@ export const Board = ({
           className="board mb-6 flex flex-col space-y-4 md:mr-3"
         >
           {/* HEADER */}
-          <div className="flex items-center justify-between font-semibold">
-            <div className="flex items-center space-x-1.5">
-              <h2>{category.label}</h2>
-              <span className="desc">{totalTasks}</span>
+          <div
+            className={cn(
+              'flex items-center justify-between gap-x-4 font-semibold',
+              renameMode && 'h-7',
+            )}
+            onDoubleClick={enableRenameMode}
+          >
+            <div className="flex h-full grow items-center space-x-1.5">
+              {renameMode ? (
+                <Input
+                  ref={renameInputRef}
+                  value={newName}
+                  className="h-full w-full shrink-0 p-2"
+                  onChange={(e) => setNewName(e.target.value)}
+                />
+              ) : (
+                <>
+                  <h2>{category.label}</h2>
+                  <span className={cn('desc', isRenaming && 'text-gray-400')}>
+                    {isRenaming ? newName : totalTasks}
+                  </span>
+                </>
+              )}
             </div>
 
-            <CategoryMenu
-              category={category}
-              total={totalCategories}
-              trigger={
+            {renameMode ? (
+              <div className="flex h-full items-center gap-x-2">
                 <Button
-                  pill
-                  size="icon"
-                  variant="secondary"
-                  tooltipMessage="Nouvelle tâche"
+                  className="aspect-square h-full p-1"
+                  onClick={renameHandler}
                 >
-                  <MoreHorizontal size={16} />
+                  <Check size={18} />
                 </Button>
-              }
-            />
+                <Button
+                  variant="secondary"
+                  className="aspect-square h-full p-1 shadow-sm"
+                  onClick={() => setRenameMode(false)}
+                >
+                  <X size={18} />
+                </Button>
+              </div>
+            ) : (
+              <CategoryMenu
+                category={category}
+                total={totalCategories}
+                trigger={
+                  <Button
+                    pill
+                    size="icon"
+                    variant="secondary"
+                    tooltipMessage="Nouvelle tâche"
+                  >
+                    <MoreHorizontal size={16} />
+                  </Button>
+                }
+                onRename={enableRenameMode}
+              />
+            )}
           </div>
 
           {/* TASKS */}

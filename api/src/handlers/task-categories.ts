@@ -173,3 +173,49 @@ export async function deleteCategory(c: Context<any, '/:id', {}>) {
     });
   }
 }
+
+export async function renameCategory(c: Context<any, '/rename', {}>) {
+  const schema = z.object({
+    id: z.string().uuid(),
+    label: z.string().min(1, { message: 'Le libellé ne peut être vide' }),
+  });
+
+  try {
+    const json = await c.req.json().catch((e) => {
+      c.status(400);
+      throw {
+        name: 'BAD_REQUEST',
+        message: 'Données JSON attendues',
+      };
+    });
+
+    const { id, label } = await schema.parseAsync(json).catch((e) => {
+      c.status(400);
+      throw e;
+    });
+
+    await db.category
+      .update({
+        where: {
+          id,
+        },
+        data: {
+          label,
+        },
+      })
+      .catch((e: any) => {
+        c.status(424);
+        throw e;
+      });
+
+    return c.json({
+      ok: true,
+    });
+  } catch (e: any) {
+    return c.json({
+      ok: false,
+      name: e.name,
+      message: e.message,
+    });
+  }
+}

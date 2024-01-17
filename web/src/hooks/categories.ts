@@ -32,6 +32,17 @@ export function useCategories() {
     },
   });
 
+  const { mutateAsync: rename, status: renamingStatus } = useMutation({
+    mutationFn: async (data: { label: string; id: string }) => {
+      const { data: res, status } = await axios.post(
+        '/task-categories/rename',
+        data,
+      );
+      if (status !== 200) throw res; // as error
+      return res;
+    },
+  });
+
   const { mutateAsync: updateCategories, status: updateStatus } = useMutation({
     mutationFn: async (
       data: Array<{
@@ -68,5 +79,7 @@ export function useCategories() {
     updateStatus,
     deleteCategory,
     deletionStatus,
+    rename,
+    renamingStatus,
   };
 }

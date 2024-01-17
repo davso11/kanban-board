@@ -12,5 +12,6 @@ router
   .put(handlers.updateCategories);
 
 router.route('/:id').delete(handlers.deleteCategory);
+router.post('/rename', handlers.renameCategory);
 
 export default router;

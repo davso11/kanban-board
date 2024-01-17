@@ -25,33 +25,38 @@ type CategoryMenuProps = {
   trigger: React.ReactNode;
   category: CategoryAPIResponse;
   total: number;
+  onRename: () => void;
 };
 
-export const CategoryMenu = ({ trigger, category }: CategoryMenuProps) => {
+export const CategoryMenu = ({
+  trigger,
+  category,
+  onRename,
+}: CategoryMenuProps) => {
   const { deleteCategory, deletionStatus } = useCategories();
   const [isOpen, setIsOpen] = useState(false);
   const qc = useQueryClient();
 
   async function deleteCategoryHandler() {
-    toast.promise(
-      deleteCategory({
-        id: category.id,
-      }),
-      {
-        loading: 'Suppression...',
-        success() {
-          qc.invalidateQueries({ queryKey: ['categories'] });
-          return 'Catégorie supprimée';
+    try {
+      await toast.promise(
+        deleteCategory({
+          id: category.id,
+        }),
+        {
+          loading: 'Suppression...',
+          error: 'Erreur lors de la suppression',
+          success() {
+            qc.invalidateQueries({ queryKey: ['categories'] });
+            return 'Catégorie supprimée';
+          },
         },
-        error(e) {
-          console.log(e);
-          return 'Erreur lors de la suppression';
-        },
-        finally() {
-          setIsOpen(false);
-        },
-      },
-    );
+      );
+
+      setIsOpen(false);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (
@@ -64,10 +69,10 @@ export const CategoryMenu = ({ trigger, category }: CategoryMenuProps) => {
         <DropdownMenuContent className="min-w-32">
           <DropdownMenuItem
             className="cursor-pointer"
-            disabled
+            onClick={onRename}
           >
             <Pencil className="mr-2 h-4 w-4" />
-            <span>Modifier</span>
+            <span>Renommer</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer text-destructive hover:!bg-red-50/80 hover:!text-destructive"
