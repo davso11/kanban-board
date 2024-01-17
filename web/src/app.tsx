@@ -13,8 +13,7 @@ import { reorder } from '@/lib/utils';
 import { useSizes } from '@/hooks/screen';
 
 export const App = () => {
-  const [droppableTaskCategory] = useState<string>();
-  const { updateTasks } = useTasks(droppableTaskCategory);
+  const { updateTasks } = useTasks();
   const {
     categories,
     queryStatus: catStatus,

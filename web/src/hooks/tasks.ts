@@ -1,24 +1,8 @@
 import { axios } from '@/lib/axios';
 import { TTask } from '@/types';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
-export function useTasks(categoryId?: string) {
-  const { data: tasks, status: queryStatus } = useQuery({
-    queryKey: ['tasks', categoryId],
-    queryFn: async () => {
-      try {
-        const { data, status } = await axios.get(
-          `/tasks/by-category/${categoryId}`,
-        );
-        if (status !== 200) throw data; // as error
-        return data as TTask[];
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    enabled: !!categoryId,
-  });
-
+export function useTasks() {
   const { mutateAsync: saveTask, status: saveStatus } = useMutation({
     mutationFn: async (data: Record<string, any>) => {
       const { data: res, status } = await axios.post('/tasks', data);
@@ -43,8 +27,6 @@ export function useTasks(categoryId?: string) {
   });
 
   return {
-    tasks,
-    queryStatus,
     saveTask,
     saveStatus,
     deleteTask,
