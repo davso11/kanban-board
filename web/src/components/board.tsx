@@ -124,7 +124,6 @@ export const Board = ({
                     pill
                     size="icon"
                     variant="secondary"
-                    tooltipMessage="Nouvelle tâche"
                   >
                     <MoreHorizontal size={16} />
                   </Button>
