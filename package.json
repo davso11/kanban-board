@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "dev": "docker-compose watch",
+    "down": "docker-compose down"
+  }
+}
