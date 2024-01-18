@@ -38,12 +38,12 @@ export const Board = ({
     setNewName(category.label);
   };
 
-  const renameHandler = async () => {
+  const renameHandler: React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
     setRenameMode(false);
 
     // If the name hasn't changed, don't do anything
     if (newName === category.label) {
-      console.log('No change detected');
       return;
     }
 
@@ -107,12 +107,37 @@ export const Board = ({
           >
             <div className="flex h-full grow items-center space-x-1.5">
               {renameMode ? (
-                <Input
-                  ref={renameInputRef}
-                  value={newName}
-                  className="h-full w-full shrink-0 p-2"
-                  onChange={(e) => setNewName(e.target.value)}
-                />
+                <form
+                  onSubmit={renameHandler}
+                  autoComplete="off"
+                  className="flex h-full w-full items-center gap-x-2"
+                >
+                  <Input
+                    value={newName}
+                    name="rename-input"
+                    ref={renameInputRef}
+                    className="h-full w-full p-2"
+                    onChange={(e) => setNewName(e.target.value)}
+                  />
+                  <div className="flex h-full items-center gap-x-2">
+                    <Button
+                      type="submit"
+                      className="aspect-square h-full p-1"
+                    >
+                      <Check size={18} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      className="aspect-square h-full p-1 shadow-sm"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setRenameMode(false);
+                      }}
+                    >
+                      <X size={18} />
+                    </Button>
+                  </div>
+                </form>
               ) : (
                 <>
                   <h2 className={cn(isRenaming && 'opacity-40')}>
@@ -125,23 +150,7 @@ export const Board = ({
               )}
             </div>
 
-            {renameMode ? (
-              <div className="flex h-full items-center gap-x-2">
-                <Button
-                  className="aspect-square h-full p-1"
-                  onClick={renameHandler}
-                >
-                  <Check size={18} />
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="aspect-square h-full p-1 shadow-sm"
-                  onClick={() => setRenameMode(false)}
-                >
-                  <X size={18} />
-                </Button>
-              </div>
-            ) : (
+            {!renameMode && (
               <CategoryMenu
                 category={category}
                 total={totalCategories}
