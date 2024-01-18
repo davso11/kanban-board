@@ -39,6 +39,14 @@ export const Board = ({
   };
 
   const renameHandler = async () => {
+    setRenameMode(false);
+
+    // If the name hasn't changed, don't do anything
+    if (newName === category.label) {
+      console.log('No change detected');
+      return;
+    }
+
     try {
       await toast.promise(
         rename({
@@ -49,7 +57,6 @@ export const Board = ({
           loading: 'Renommage...',
           error: 'Erreur lors du renommage',
           success: () => {
-            setRenameMode(false);
             qc.invalidateQueries({ queryKey: ['categories'] });
             return 'Catégorie renommée';
           },
@@ -108,10 +115,12 @@ export const Board = ({
                 />
               ) : (
                 <>
-                  <h2>{category.label}</h2>
-                  <span className={cn('desc', isRenaming && 'text-gray-400')}>
-                    {isRenaming ? newName : totalTasks}
-                  </span>
+                  <h2 className={cn(isRenaming && 'opacity-40')}>
+                    {isRenaming || renamingStatus === 'success'
+                      ? newName
+                      : category.label}
+                  </h2>
+                  <span className="desc">{totalTasks}</span>
                 </>
               )}
             </div>
