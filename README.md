@@ -2,8 +2,15 @@
 
 Outils nécessaires au démarrage :
 
-- [GIT](https://git-scm.com/)
 - [Docker](https://docs.docker.com/engine/install/)
+- [Node.js](https://nodejs.org/en)
+- [GIT](https://git-scm.com/)
+
+Note: S'assurer d'avoir `Docker Compose` au moins à la version `v2.22`.
+
+```zsh
+docker-compose --version
+```
 
 ### Cloner le dépôt 🧬
 
@@ -31,14 +38,16 @@ DATABASE_URL="mysql://${MYSQL_USER}:${MYSQL_ROOT_PASSWORD}@127.0.0.1:${MYSQL_POR
 VITE_API_BASE_URL=""
 ```
 
-### Démarrage du serveur de développement 🚀
+### Démarrage des serveurs en mode développement 🚀
 
 ```zsh
-docker-compose up [-d] [--build]
+npm run dev
 ```
 
-Synchroniser le schema prisma et la base de données
+### Synchroniser le schema prisma et la base de données
+
+Se déplacer dans le dossier `api/` et exécuter la commande suivante :
 
 ```zsh
-pnpm db:push
+npm run db:push
 ```
