@@ -140,7 +140,9 @@ export const Board = ({
                 </form>
               ) : (
                 <>
-                  <h2 className={cn(isRenaming && 'opacity-40')}>
+                  <h2
+                    className={cn('line-clamp-1', isRenaming && 'opacity-40')}
+                  >
                     {isRenaming || renamingStatus === 'success'
                       ? newName
                       : category.label}
@@ -159,6 +161,7 @@ export const Board = ({
                     pill
                     size="icon"
                     variant="secondary"
+                    className="shrink-0"
                   >
                     <MoreHorizontal size={16} />
                   </Button>
