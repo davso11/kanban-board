@@ -24,7 +24,7 @@ export const Task = ({ index, task }: TaskProps) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          className="mb-4"
+          className="mb-2.5"
         >
           <div
             className={cn('task', {

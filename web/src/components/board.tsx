@@ -95,12 +95,12 @@ export const Board = ({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          className="board hide-scrollbar relative mb-6 flex max-h-[calc(100vh_-_8.75rem)] flex-col space-y-4 overflow-y-auto md:mb-0 md:mr-3"
+          className="board relative mb-6 flex w-full shrink-0 basis-auto flex-col overflow-hidden md:mb-0 md:mr-3 md:w-auto md:basis-[25rem]"
         >
           {/* HEADER */}
           <div
             className={cn(
-              'flex items-center justify-between gap-x-4 font-semibold',
+              'sticky left-0 top-0 z-50 mb-2.5 flex w-full items-center justify-between gap-x-4 bg-muted p-4 pb-2.5 font-semibold',
               renameMode && 'h-7',
             )}
             onDoubleClick={enableRenameMode}
@@ -180,31 +180,37 @@ export const Board = ({
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                className="flex flex-col"
+                className="h-full"
               >
-                {totalTasks > 0
-                  ? tasks.map((task, i) => (
-                      <Task
-                        key={task.id}
-                        index={i}
-                        task={task}
-                      />
-                    ))
-                  : null}
-                {provided.placeholder}
-                <NewTaskDialog
-                  categoryId={category.id}
-                  totalTasks={totalTasks}
-                  trigger={
-                    <Button
-                      variant="secondary"
-                      className="space-x-1.5"
-                    >
-                      <Plus size={16} />
-                      <span>Nouvelle tâche</span>
-                    </Button>
-                  }
-                />
+                <div className="flex max-h-[calc(100vh_-_16.875rem)] flex-col overflow-y-auto px-4">
+                  {totalTasks > 0
+                    ? tasks.map((task, i) => (
+                        <Task
+                          key={task.id}
+                          index={i}
+                          task={task}
+                        />
+                      ))
+                    : null}
+                  {provided.placeholder}
+                </div>
+
+                {/* NEW TASK BUTTON */}
+                <div className="sticky bottom-0 left-0 w-full bg-muted p-4 pt-2.5">
+                  <NewTaskDialog
+                    categoryId={category.id}
+                    totalTasks={totalTasks}
+                    trigger={
+                      <Button
+                        variant="secondary"
+                        className="w-full space-x-1.5"
+                      >
+                        <Plus size={16} />
+                        <span>Nouvelle tâche</span>
+                      </Button>
+                    }
+                  />
+                </div>
               </div>
             )}
           </Droppable>

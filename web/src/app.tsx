@@ -23,8 +23,6 @@ export const App = () => {
   const [orderedCategories, setOrderedCategories] = useState(categories ?? []);
   const qc = useQueryClient();
 
-  const isMaxCategories = orderedCategories.length >= 3;
-
   const { width } = useSizes();
 
   useEffect(() => {
@@ -197,7 +195,7 @@ export const App = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-1 items-start md:grid-cols-3 "
+              className="flex min-h-[calc(100vh_-_6.75rem)] w-full flex-col items-start overflow-x-auto md:flex-row"
             >
               {orderedCategories.map((item, i) => (
                 <Board
@@ -237,14 +235,11 @@ export const App = () => {
                 disabled={
                   catStatus === 'pending' ||
                   catStatus === 'error' ||
-                  isMaxCategories ||
                   updateStatus === 'pending'
                 }
               >
-                {!isMaxCategories && <Plus size={16} />}
-                <span>
-                  {isMaxCategories ? 'Max (03) atteint' : 'Catégorie'}
-                </span>
+                <Plus size={16} />
+                <span>Catégorie</span>
               </Button>
             }
           />
