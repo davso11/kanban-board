@@ -101,7 +101,6 @@ export const Board = ({
           <div
             className={cn(
               'sticky left-0 top-0 z-50 flex w-full items-center justify-between gap-x-4 bg-muted p-4 pb-2.5 font-semibold',
-              renameMode && 'h-7',
             )}
             onDoubleClick={enableRenameMode}
           >
@@ -110,7 +109,7 @@ export const Board = ({
                 <form
                   onSubmit={renameHandler}
                   autoComplete="off"
-                  className="flex h-full w-full items-center gap-x-2"
+                  className="flex h-7 w-full items-center gap-x-2"
                 >
                   <Input
                     value={newName}
@@ -141,7 +140,10 @@ export const Board = ({
               ) : (
                 <>
                   <h2
-                    className={cn('line-clamp-1', isRenaming && 'opacity-40')}
+                    className={cn(
+                      'line-clamp-1 leading-7',
+                      isRenaming && 'opacity-40',
+                    )}
                   >
                     {isRenaming || renamingStatus === 'success'
                       ? newName
