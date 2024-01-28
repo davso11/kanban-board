@@ -95,7 +95,7 @@ export const Board = ({
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          className="board mb-6 flex flex-col space-y-4 md:mr-3"
+          className="board hide-scrollbar relative mb-6 flex max-h-[calc(100vh_-_8.75rem)] flex-col space-y-4 overflow-y-auto md:mb-0 md:mr-3"
         >
           {/* HEADER */}
           <div
