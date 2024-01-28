@@ -27,7 +27,7 @@ type TaskMenuProps = {
 };
 
 export const TaskMenu = ({ trigger, task }: TaskMenuProps) => {
-  const { deleteTask, deleteStatus } = useTasks(task.categoryId);
+  const { deleteTask, deleteStatus } = useTasks();
   const [isOpen, setIsOpen] = useState(false);
   const qc = useQueryClient();
 

@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 
 export function useTasks() {
   const { mutateAsync: saveTask, status: saveStatus } = useMutation({
-    mutationFn: async (data: Record<string, any>) => {
+    mutationFn: async (data: Record<string, unknown>) => {
       const { data: res, status } = await axios.post('/tasks', data);
       if (status !== 201) throw res; // as error
       return res as TTask;

@@ -1,5 +1,5 @@
 import { toast } from 'react-hot-toast';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { MoreHorizontal, Plus, Check, X } from 'lucide-react';
@@ -68,11 +68,14 @@ export const Board = ({
   };
 
   // Close rename mode on `esc` key
-  const escKeyHandler = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && renameMode) {
-      setRenameMode(false);
-    }
-  };
+  const escKeyHandler = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && renameMode) {
+        setRenameMode(false);
+      }
+    },
+    [renameMode],
+  );
 
   useEffect(() => {
     if (renameMode) {
