@@ -100,7 +100,7 @@ export const Board = ({
           {/* HEADER */}
           <div
             className={cn(
-              'sticky left-0 top-0 z-50 mb-2.5 flex w-full items-center justify-between gap-x-4 bg-muted p-4 pb-2.5 font-semibold',
+              'sticky left-0 top-0 z-50 flex w-full items-center justify-between gap-x-4 bg-muted p-4 pb-2.5 font-semibold',
               renameMode && 'h-7',
             )}
             onDoubleClick={enableRenameMode}
@@ -182,7 +182,7 @@ export const Board = ({
                 ref={provided.innerRef}
                 className="h-full"
               >
-                <div className="flex max-h-[calc(100vh_-_16.875rem)] flex-col overflow-y-auto px-4">
+                <div className="flex max-h-[calc(100vh_-_16.875rem)] flex-col overflow-y-auto px-4 pt-2.5">
                   {totalTasks > 0
                     ? tasks.map((task, i) => (
                         <Task
