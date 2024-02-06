@@ -25,11 +25,7 @@ Créer un fichier `.env` dans les dossiers `api/` et `web/` et renseigner les ch
 #### Dossier `api/`
 
 ```
-MYSQL_USER=""
-MYSQL_PORT=""
-MYSQL_ROOT_PASSWORD=""
-MYSQL_DATABASE=""
-DATABASE_URL="mysql://${MYSQL_USER}:${MYSQL_ROOT_PASSWORD}@127.0.0.1:${MYSQL_PORT}/${MYSQL_DATABASE}"
+DATABASE_URL=""
 ```
 
 #### Dossier `web/`
@@ -42,12 +38,4 @@ VITE_API_BASE_URL=""
 
 ```zsh
 npm run dev
-```
-
-### Synchroniser le schema prisma et la base de données
-
-Se déplacer dans le dossier `api/` et exécuter la commande suivante :
-
-```zsh
-npm run db:push
 ```
