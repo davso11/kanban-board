@@ -24,11 +24,8 @@ services:
             - node_modules/
         - action: rebuild
           path: ./api/package.json
-    env_file:
-      - ./api/.env
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=mysql://root:root@db:3306/kanban-board
     depends_on:
       - db
 

@@ -9,11 +9,10 @@ WORKDIR /app
 
 COPY package.json .
 
-COPY prisma ./prisma
-
-RUN pnpm i --silent \
-  && pnpm db:gen
+RUN pnpm i 
 
 COPY . .
 
-CMD [ "pnpm", "dev" ]
+RUN chmod +x scripts/init.sh
+
+CMD [ "scripts/init.sh" ]
