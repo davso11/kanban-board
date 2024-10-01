@@ -13,6 +13,4 @@ RUN pnpm i
 
 COPY . .
 
-RUN chmod +x scripts/init.sh
-
-CMD [ "scripts/init.sh" ]
+CMD pnpm db:push && pnpm start

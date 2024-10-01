@@ -32,13 +32,13 @@ WEB_PORT="5173"
 #### Dossier `api/`
 
 ```
-DATABASE_URL="mysql://root:root@db:3306/kanban-board"
+DATABASE_URL=""
 ```
 
 #### Dossier `web/`
 
 ```
-VITE_API_BASE_URL="http://localhost:3000"
+VITE_API_BASE_URL=""
 ```
 
 ### Démarrage des serveurs en mode développement 🚀
